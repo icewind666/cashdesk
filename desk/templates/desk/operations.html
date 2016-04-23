@@ -1,0 +1,33 @@
+<table class="table table-hover table-bordered">
+    <thead>
+        <tr>
+            <td>Дата</td>
+            <td>Сумма</td>
+            <td>Комментарий</td>
+        </tr>
+    </thead>
+    <tbody>
+    {% for op in operations %}
+        {% if op.isSpent %}
+            <tr class="danger">
+        {% else %}
+            <tr class="success">
+        {% endif %}
+        <td> {{ op.datetime }} </td>
+    <td>
+        {% if op.isSpent %} -{% else %} + {% endif %} {{ op.amount }}
+     </td>
+    <td> {{ op.comment }}</td>
+        
+    </tr>
+{% empty %}
+<p>Нет данных</p>
+{% endfor %}
+</tbody>
+</table>
+<script type="text/javascript">
+    console.log("{{ remainder }}");
+    
+    $("#remainder").html("{{ remainder }}");
+    
+</script>

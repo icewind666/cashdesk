@@ -1,0 +1,80 @@
+{% extends "desk/main.html" %}
+{% load has_group %}
+{% block content %}
+{% if user.is_authenticated %}
+<div class="row" align="right">
+<div class="col-md-12" align="center">
+<h2><nowrap>Остаток: <span id="remainder">{{ object_list.0.remainder_amount }}</span></nowrap></h2>
+</div>
+</div>
+{% if user|in_group:"editors" %}
+<div class="row">
+<div class="col-sm-6">
+<form role="form" class="form">
+  <div class="form-group" id="spent-group" name="spent-group">
+    <label class="control-label"><h4>Расход</h4></label>
+    <input type="text" class="form-control input-lg" placeholder="сумма..." value="0.0" id="spent_amount"  />
+    <br/>
+    <textarea rows="2" class="form-control" placeholder="комментарий..." id="spent_comment"></textarea>
+    <br />    
+    <button type="submit" class="btn btn-info btn-block" id="addspent">Внести</button>        
+  </div>
+</form>
+</div>
+
+<div class="col-sm-6">
+<form role="form" class="form">
+  <div class="form-group" id="income-group" name="income-group">
+    <label class="control-label"><h4>Приход</h4></label>
+    <input type="text" class="form-control input-lg" placeholder="сумма..." value="0.0" id="income_amount"/>
+    <br/>
+    <textarea rows="2" class="form-control" placeholder="комментарий..." id="income_comment"></textarea>
+    <br />    
+    <button type="submit" class="btn btn-info btn-block" id="addincome" >Внести</button>
+  </div>
+</form>
+</div>
+</div>
+{%endif%}
+<div id="operations">    
+<table class="table table-hover table-bordered">
+    <thead>
+        <tr>
+            <td>Дата</td>
+            <td>Сумма</td>
+            <td>Комментарий</td>
+        </tr>
+    </thead>
+    <tbody>
+    {% for op in object_list %}
+        {% if op.isSpent %}
+            <tr class="danger">
+        {% else %}
+            <tr class="success">
+        {% endif %}
+        <td> {{ op.datetime }} </td>
+    <td>
+        {% if op.isSpent %} -{% else %} + {% endif %} {{ op.amount }}
+     </td>
+    <td> {{ op.comment }}</td>
+        
+    </tr>
+{% empty %}
+<p>Нет данных</p>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{%else%}
+<script>
+function redir() {
+    window.location.href="{% url 'django.contrib.auth.views.login' %}";
+}
+</script>
+
+<div class="row" align="center">
+Здравствуйте, для продолжения работы необходимо авторизоваться в системе.<br /><br />
+<center><button class="btn btn-info btn-lg" onclick="redir()">ВОЙТИ</button></center>
+</div>
+{% endif %}
+{% endblock %}
